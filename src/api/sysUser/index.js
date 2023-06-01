@@ -3,9 +3,13 @@ import request from '@/axios/'
 const pref = '/sysUser'
 
 export const login = (data) => {
-  return request.post(pref + '/login', data)
+  return request.post('/api/login', data)
 }
 
 export const getInfo = (token) => {
-  return request.get(pref + '/info', token)
+  return request.get('/api/info', token)
+}
+
+export const logout = () => {
+  return request.get('/api/logout')
 }

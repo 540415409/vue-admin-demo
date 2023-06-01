@@ -68,7 +68,6 @@
               })
               this.loading = false
             }).catch((error) => {
-              console.log('error error' + error)
               this.loading = false
             })
           } else {

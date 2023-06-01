@@ -1,18 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {
-  login,
-  logout,
-  getInfo
-} from '@/api/sysUser'
-import {
-  filterAsyncRoutes
-} from '@/utils/';
-import {
-  getToken,
-  setToken,
-  removeToken
-} from '@/cookie'
+import { resetRouter } from '@/router'
+import { login, logout, getInfo } from '@/api/sysUser'
+import { filterAsyncRoutes } from '@/utils/';
+import { getToken, setToken, removeToken } from '@/cookie'
 
 Vue.use(Vuex);
 
@@ -53,6 +44,17 @@ const store = new Vuex.Store({
         login(userInfo).then(response => {
           commit('setUserToken', response.data)
           setToken(response.data)
+          resolve(response.data)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    dologout(state) {
+      return new Promise((resolve, reject) => {
+        logout(state.userToken).then(() => {
+          removeToken()
+          resetRouter()
           resolve()
         }).catch(error => {
           reject(error)
@@ -66,7 +68,7 @@ const store = new Vuex.Store({
             reject('Verification failed, please Login again.')
           }
           commit('setUserInfo', response.data)
-          resolve(response.data);
+          resolve();
         }).catch(error => {
           reject(error)
         })
@@ -77,6 +79,12 @@ const store = new Vuex.Store({
         const accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
         commit('setRoutes', accessedRoutes)
         resolve(accessedRoutes)
+      })
+    },
+    resetToken(state) {
+      return new Promise(resolve => {
+        removeToken()
+        resolve()
       })
     }
   }
