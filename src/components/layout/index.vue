@@ -14,44 +14,17 @@
       <el-container>
         <el-row class="main-body">
           <el-col :span="4">
-            <el-aside width="280px" class="app-left">
-              <!--     <el-menu active-text-color="#ffd04b">
-                <el-submenu index="0">
+            <el-aside width="250px" class="app-left">
+              <el-menu active-text-color="#ffd04b" router :default-active="this.$route.path" collapse-transition>
+                <el-submenu :index="item.path" v-for="(item, index) in this.$store.getters.getRoutes" :key="index">
                   <template slot="title">
-                    <i class="el-icon-s-tools"></i>
-                    <span class="menu-title">系统管理</span>
+                    <i :class="item.meta.icon"></i>
+                    <span class="menu-title">{{ item.meta.title }}</span>
                   </template>
-                  <el-menu-item index="0-1">用户管理</el-menu-item>
-                  <el-menu-item index="0-2">角色管理</el-menu-item>
-                  <el-menu-item index="0-3">菜单管理</el-menu-item>
+                  <el-menu-item :index="child.path" v-for="(child, index) in item.children" :key="index">{{
+                    child.meta.title }}</el-menu-item>
                 </el-submenu>
-                <el-submenu index="1">
-                  <template slot="title">
-                    <i class="el-icon-s-data"></i>
-                    <span class="menu-title">内容管理</span>
-                  </template>
-                  <el-menu-item index="1-1">视频管理</el-menu-item>
-                  <el-menu-item index="1-2">音乐管理</el-menu-item>
-                </el-submenu>
-                <el-submenu index="2">
-                  <template slot="title">
-                    <i class="el-icon-s-custom"></i>
-                    <span class="menu-title">互动管理</span>
-                  </template>
-                  <el-menu-item index="11-1">关注管理</el-menu-item>
-                  <el-menu-item index="11-2">粉丝管理</el-menu-item>
-                  <el-menu-item index="11-3">评论管理</el-menu-item>
-                </el-submenu>
-                <el-submenu index="3">
-                  <template slot="title">
-                    <i class="el-icon-video-camera-solid"></i>
-                    <span class="menu-title">视频数据</span>
-                  </template>
-                  <el-menu-item index="12-1">数据总览</el-menu-item>
-                  <el-menu-item index="12-2">作品数据</el-menu-item>
-                  <el-menu-item index="12-3">粉丝面向</el-menu-item>
-                </el-submenu>
-              </el-menu> -->
+              </el-menu>
             </el-aside>
           </el-col>
           <el-col :span="20">
@@ -74,8 +47,12 @@ export default {
   methods: {
     async logout() {
       await this.$store.dispatch('dologout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      this.$router.push(`/login?redirect=/dashboard`)
     }
+  },
+  mounted() {
+    console.log(this.$router.options);
+    console.log(this.$store.getters.getRoutes);
   }
 }
 </script>
@@ -124,6 +101,7 @@ export default {
 .el-menu {
   margin: 10px 10px;
   border: 0px;
+  max-width: 230px;
 }
 
 /deep/ .el-submenu__title,

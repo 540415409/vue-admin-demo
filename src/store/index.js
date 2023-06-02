@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { MessageBox, Message } from 'element-ui'
-import { resetRouter, asyncRoutes } from '@/router'
+import { resetRouter, constantRoutes, asyncRoutes } from '@/router'
 import { login, logout, getInfo } from '@/api/sysUser'
 import { filterAsyncRoutes } from '@/utils/';
 import { getToken, setToken, removeToken } from '@/cookie'
@@ -18,14 +17,19 @@ const store = new Vuex.Store({
     addRoutes: []
   },
 
-  getters:{
+  getters: {
 
     getUserToken(state) {
       return state.userToken;
     },
+
     getUserRoles(state) {
       return state.userRoles;
-    }
+    },
+
+    getRoutes(state) {
+      return state.routes
+    },
   },
 
   mutations: {
@@ -40,6 +44,7 @@ const store = new Vuex.Store({
     },
     setRoutes(state, routes) {
       state.routes = routes;
+      state.addRoutes = constantRoutes.concat(routes);
     },
   },
   actions: {

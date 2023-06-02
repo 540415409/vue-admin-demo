@@ -43,29 +43,39 @@ export const asyncRoutes = [{
   redirect: '/org/sysUser',
   name: 'Org',
   meta: {
-    title: '用户管理',
+    title: '组织机构',
     icon: 'el-icon-s-home',
     roles: ['SYS_USER']
   },
-  children: [{
-    path: 'sysRole',
-    name: 'SysRole',
-    component: () => import('@/views/sysRole/index'),
-    meta: {
-      title: '角色管理',
-      roles: ['SYS_ROLE']
-    }
-  },
-  {
-    path: 'sysMenu',
-    name: 'SysMenu',
-    component: () => import('@/views/sysMenu/index'),
-    meta: {
-      title: '菜单管理',
-      icon: 'sysMenu',
-      roles: ['SYS_MENU']
-    }
-  },
+  children: [
+    {
+      path: '/org/sysUser',
+      name: 'SysUser',
+      component: () => import('@/views/sysUser/index'),
+      meta: {
+        title: '用户管理',
+        roles: ['SYS_USER']
+      }
+    },
+    {
+      path: '/org/sysRole',
+      name: 'SysRole',
+      component: () => import('@/views/sysRole/index'),
+      meta: {
+        title: '角色管理',
+        roles: ['SYS_ROLE']
+      }
+    },
+    {
+      path: '/org/sysMenu',
+      name: 'SysMenu',
+      component: () => import('@/views/sysMenu/index'),
+      meta: {
+        title: '菜单管理',
+        icon: 'sysMenu',
+        roles: ['SYS_ROLE1']
+      }
+    },
   ],
 }]
 
