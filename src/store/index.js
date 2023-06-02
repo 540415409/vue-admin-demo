@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { resetRouter } from '@/router'
+import { MessageBox, Message } from 'element-ui'
+import { resetRouter, asyncRoutes } from '@/router'
 import { login, logout, getInfo } from '@/api/sysUser'
 import { filterAsyncRoutes } from '@/utils/';
 import { getToken, setToken, removeToken } from '@/cookie'
@@ -9,12 +10,22 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    userToken: '',
+    userToken: getToken(),
     userId: '',
     userName: '',
     userRoles: [],
     routes: [],
     addRoutes: []
+  },
+
+  getters:{
+
+    getUserToken(state) {
+      return state.userToken;
+    },
+    getUserRoles(state) {
+      return state.userRoles;
+    }
   },
 
   mutations: {
@@ -30,29 +41,23 @@ const store = new Vuex.Store({
     setRoutes(state, routes) {
       state.routes = routes;
     },
-    getUserToken(state) {
-      return state.userToken;
-    },
-    getUserRoles(state) {
-      return state.userRoles;
-    }
   },
   actions: {
     /*** 异步操作 ***/
-    dologin(state, userInfo) {
+    dologin({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
           commit('setUserToken', response.data)
           setToken(response.data)
-          resolve(response.data)
+          resolve()
         }).catch(error => {
           reject(error)
         })
       })
     },
-    dologout(state) {
+    dologout({ commit }) {
       return new Promise((resolve, reject) => {
-        logout(state.userToken).then(() => {
+        logout().then(() => {
           removeToken()
           resetRouter()
           resolve()
@@ -61,27 +66,27 @@ const store = new Vuex.Store({
         })
       })
     },
-    getUserInfo(state) {
+    getUserInfo({ commit }) {
       return new Promise((resolve, reject) => {
-        getInfo(state.userToken).then(response => {
+        getInfo().then(response => {
           if (!response.data) {
             reject('Verification failed, please Login again.')
           }
           commit('setUserInfo', response.data)
-          resolve();
+          resolve(response.data);
         }).catch(error => {
           reject(error)
         })
       })
     },
-    generateRoutes(state) {
+    generateRoutes({ commit }, roles) {
       return new Promise(resolve => {
         const accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
         commit('setRoutes', accessedRoutes)
         resolve(accessedRoutes)
       })
     },
-    resetToken(state) {
+    resetToken({ commit }) {
       return new Promise(resolve => {
         removeToken()
         resolve()

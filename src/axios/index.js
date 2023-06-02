@@ -42,10 +42,10 @@ service.interceptors.response.use(
       if (res.code === 500) {
         MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again',
           'Confirm logout', {
-            confirmButtonText: 'Re-Login',
-            cancelButtonText: 'Cancel',
-            type: 'warning'
-          }).then(() => {
+          confirmButtonText: 'Re-Login',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
           store.dispatch('resetToken').then(() => {
             location.reload()
           })

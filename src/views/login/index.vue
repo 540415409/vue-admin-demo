@@ -88,7 +88,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url(http://demo.ruoyi.vip/img/login-background.jpg);
-    background-size: cover;
+    /* background-image: url(http://demo.ruoyi.vip/img/login-background.jpg); */
+    /* background-size: cover; */
   }
 </style>

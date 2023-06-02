@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import {
-  getToken
-} from '@/cookie/'
+import { getToken } from '@/cookie'
+import { MessageBox, Message } from 'element-ui'
+import store from '@/store'
 
 Vue.use(Router)
 
@@ -11,30 +11,30 @@ const title = '后台管理系统'
 
 /*** 静态路由 ***/
 export const constantRoutes = [{
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
-  },
+  path: '/login',
+  component: () => import('@/views/login/index'),
+  hidden: true
+},
 
-  {
-    path: '/404',
-    component: () => import('@/views/404'),
-    hidden: true
-  },
-  {
-    path: '/',
-    component: () => import('@/components/layout/index'),
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: {
-        title: '首页',
-        icon: 'dashboard'
-      }
-    }]
-  }
+{
+  path: '/404',
+  component: () => import('@/views/404'),
+  hidden: true
+},
+{
+  path: '/',
+  component: () => import('@/components/layout/index'),
+  redirect: '/dashboard',
+  children: [{
+    path: 'dashboard',
+    name: 'Dashboard',
+    component: () => import('@/views/dashboard/index'),
+    meta: {
+      title: '首页',
+      icon: 'dashboard'
+    }
+  }]
+}
 ]
 
 export const asyncRoutes = [{
@@ -48,24 +48,24 @@ export const asyncRoutes = [{
     roles: ['SYS_USER']
   },
   children: [{
-      path: 'sysRole',
-      name: 'SysRole',
-      component: () => import('@/views/sysRole/index'),
-      meta: {
-        title: '角色管理',
-        roles: ['SYS_ROLE']
-      }
-    },
-    {
-      path: 'sysMenu',
-      name: 'SysMenu',
-      component: () => import('@/views/sysMenu/index'),
-      meta: {
-        title: '菜单管理',
-        icon: 'sysMenu',
-        roles: ['SYS_MENU']
-      }
-    },
+    path: 'sysRole',
+    name: 'SysRole',
+    component: () => import('@/views/sysRole/index'),
+    meta: {
+      title: '角色管理',
+      roles: ['SYS_ROLE']
+    }
+  },
+  {
+    path: 'sysMenu',
+    name: 'SysMenu',
+    component: () => import('@/views/sysMenu/index'),
+    meta: {
+      title: '菜单管理',
+      icon: 'sysMenu',
+      roles: ['SYS_MENU']
+    }
+  },
   ],
 }]
 
@@ -94,14 +94,12 @@ router.beforeEach(async (to, from, next) => {
         path: '/'
       })
     } else {
-      let userRoles = store.commit('getUserRoles');
+      let userRoles = store.getters.getUserRoles;
       if (userRoles && userRoles.length > 0) {
         next()
       } else {
         try {
-          const {
-            userRoles
-          } = await store.dispatch('getUserInfo')
+          const { userRoles } = await store.dispatch('getUserInfo')
           const accessRoutes = await store.dispatch('generateRoutes', userRoles);
           router.addRoutes(accessRoutes)
           next({
@@ -109,7 +107,7 @@ router.beforeEach(async (to, from, next) => {
             replace: true
           })
         } catch (error) {
-          await store.dispatch('user/resetToken')
+          await store.dispatch('resetToken')
           Message.error(error || 'Has Error')
           next(`/login?redirect=${to.path}`)
         }
